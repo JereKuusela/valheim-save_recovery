@@ -14,6 +14,7 @@ public class SaveRecovery : BaseUnityPlugin
   public const string GUID = "save_recovery";
   public const string NAME = "Save Recovery";
   public const string VERSION = "1.0";
+
   public void Awake()
   {
     new Harmony(GUID).PatchAll();
@@ -27,13 +28,15 @@ public class SaveRecovery : BaseUnityPlugin
     if (rooms <= maxRooms) return;
     // On save, the amount of data gets casted to a byte. This means that arbitrary amount of data will be loaded.
     var loaded = ZDOExtraData.s_ints.ContainsKey(id) ? ZDOExtraData.s_ints[id].Count : 0;
-
+    // Will be fully loaded.
+    ZDOExtraData.Reserve(id, ZDOExtraData.Type.Int, 255);
     // Read up to the max (-1 to check for rooms).
     for (var i = loaded; i < 254; i++)
       ZDOExtraData.Add(id, pkg.ReadInt(), pkg.ReadInt());
-    var isRoomsSet = ZDOExtraData.s_ints.ContainsKey(id) && ZDOExtraData.s_ints[id].ContainsKey(ZDOVars.s_rooms);
-    // If rooms is not set, we can't read the last one because setting the rooms would then overflow.
-    if (isRoomsSet)
+    var isRoomsKey = ZDOExtraData.s_ints.ContainsKey(id) && ZDOExtraData.s_ints[id].ContainsKey(ZDOVars.s_rooms);
+    // If rooms value doesn't exist, the last value can't be read,
+    // Otherwise adding the rooms value would overflow the byte limit.
+    if (isRoomsKey)
       ZDOExtraData.Add(id, pkg.ReadInt(), pkg.ReadInt());
     else
     {
@@ -48,7 +51,24 @@ public class SaveRecovery : BaseUnityPlugin
       pkg.ReadInt();
       pkg.ReadInt();
     }
-    ZDOExtraData.Set(id, ZDOVars.s_rooms, maxRooms);
+    ZDOExtraData.Add(id, ZDOVars.s_rooms, maxRooms);
+
+    // Clean up vectors and quats from discarded rooms.
+    // Otherwise this clean up code runs every time the save is loaded.
+    var vecs = ZDOExtraData.s_vec3.ContainsKey(id) ? ZDOExtraData.s_vec3[id].Count : 0;
+    for (var i = 0; i < vecs; i++)
+    {
+      var text = "room" + i.ToString();
+      var hash = text.GetStableHashCode();
+      if (ZDOExtraData.s_ints[id].ContainsKey(hash)) continue;
+      hash = (text + "_pos").GetStableHashCode();
+      ZDOHelper.Remove(ZDOExtraData.s_vec3, id, hash);
+      // Assuming there are always more vectors than quats.
+      // Quats can get removed when room rotation equals identity, but room position is never at zero point.
+      hash = (text + "_rot").GetStableHashCode();
+      ZDOHelper.Remove(ZDOExtraData.s_quats, id, hash);
+
+    }
     ZLog.Log($"Destroyed {rooms - maxRooms} rooms from the dungeon {id}");
   }
   static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
