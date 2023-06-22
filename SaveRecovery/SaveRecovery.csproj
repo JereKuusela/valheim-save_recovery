@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net4.8</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
+    <nullable>enable</nullable>
+    <DoILRepack>false</DoILRepack>
+  </PropertyGroup>
+  <Target Name="CopyDLL" AfterTargets="build">
+    <Copy SourceFiles="$(TargetDir)$(ProjectName).dll" DestinationFolder="$(ProjectDir)\..\..\Libs" />
+    <Message Text="Copied to Libs folder." Importance="High" />
+  </Target>
+  <ItemGroup>
+    <Reference Include="BepInEx.dll">
+      <HintPath>..\..\Libs\BepinEx.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.dll">
+      <HintPath>..\..\Libs\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule.dll">
+      <HintPath>..\..\Libs\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="0Harmony.dll">
+      <HintPath>..\..\Libs\0Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="BepInEx.Harmony.dll">
+      <HintPath>..\..\Libs\BepInEx.Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="assembly_valheim_publicized.dll">
+      <HintPath>..\..\Libs\assembly_valheim_publicized.dll</HintPath>
+    </Reference>
+    <Reference Include="assembly_utils_publicized.dll">
+      <HintPath>..\..\Libs\assembly_utils_publicized.dll</HintPath>
+    </Reference>
+    <Reference Include="assembly_guiutils_publicized.dll">
+      <HintPath>..\..\Libs\assembly_guiutils_publicized.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>
