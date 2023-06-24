@@ -1,7 +1,7 @@
 {
   "name": "Save_Recovery",
-  "version_number": "1.0.0",
-  "website_url": "https://github.com/JereKuusela/valheim-cron_job",
+  "version_number": "1.0.1",
+  "website_url": "https://github.com/JereKuusela/valheim-save_recovery",
   "description": "Recovers some corrupted saves. Uninstall after use.",
   "dependencies": [
     "denikson-BepInExPack_Valheim-5.4.2105"
