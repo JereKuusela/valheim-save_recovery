@@ -8,7 +8,7 @@ namespace SaveRecovery;
 [HarmonyPatch(typeof(ZDO), nameof(ZDO.Load))]
 public class DungeonRecovery
 {
- static readonly int maxRooms = 255 / 2;
+  static readonly int maxRooms = 255 / 2;
   // Id could be acquired from zdo but transpiler is simpler this way.
   static void CheckCorruption(ZDOID id, ZPackage pkg, ZDO zdo)
   {
