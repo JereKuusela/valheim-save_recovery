@@ -19,7 +19,7 @@ public class SmelterRecovery
     if (queued <= limit) return;
 
     // Queue is not read in order so we must gather all data and select the first 255 items.
-    Dictionary<int, string> items = new();
+    Dictionary<int, string> items = [];
     if (ZDOExtraData.s_strings.ContainsKey(id))
     {
       foreach (var item in ZDOExtraData.s_strings[id])

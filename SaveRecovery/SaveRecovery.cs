@@ -8,7 +8,7 @@ public class SaveRecovery : BaseUnityPlugin
 {
   public const string GUID = "save_recovery";
   public const string NAME = "Save Recovery";
-  public const string VERSION = "1.1";
+  public const string VERSION = "1.2";
 
   public void Awake()
   {

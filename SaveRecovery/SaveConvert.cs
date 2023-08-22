@@ -11,6 +11,7 @@ public class SaveConvert
 
   static void Postfix(ZDO __instance)
   {
+    ZLog.LogWarning($"Securing old format...");
     var zdo = __instance;
     CleanExtraRooms(zdo);
     CleanExtraItems(zdo);
@@ -57,21 +58,8 @@ public class SaveConvert
   {
     var rooms = zdo.GetInt(ZDOVars.s_rooms);
     if (rooms <= maxRooms) return;
-
-    for (var i = maxRooms; i < rooms; i++)
-    {
-      var text = "room" + i.ToString();
-      var hash = text.GetStableHashCode();
-      ZDOHelper.Remove(ZDOExtraData.s_ints, zdo.m_uid, hash);
-      hash = (text + "_seed").GetStableHashCode();
-      ZDOHelper.Remove(ZDOExtraData.s_ints, zdo.m_uid, hash);
-      hash = (text + "_pos").GetStableHashCode();
-      ZDOHelper.Remove(ZDOExtraData.s_vec3, zdo.m_uid, hash);
-      hash = (text + "_rot").GetStableHashCode();
-      ZDOHelper.Remove(ZDOExtraData.s_quats, zdo.m_uid, hash);
-    }
-    ZDOExtraData.Add(zdo.m_uid, ZDOVars.s_rooms, maxRooms);
-    ZLog.LogWarning($"Removed {rooms - maxRooms} extra rooms from {Helper.Print(zdo)}");
+    // Done here to prevent the general bytes length check from removing data.
+    ZDOMan.instance.ConvertDungeonRooms([zdo]);
   }
   static readonly int maxItems = 255;
   static void CleanExtraItems(ZDO zdo)
@@ -80,7 +68,7 @@ public class SaveConvert
     if (items <= maxItems) return;
 
     // Log discarded items.
-    Dictionary<string, int> discarded = new();
+    Dictionary<string, int> discarded = [];
     for (var i = maxItems; i < items; i++)
     {
       var hash = ("item" + i.ToString()).GetStableHashCode();

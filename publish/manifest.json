@@ -1,9 +1,7 @@
 {
   "name": "Save_Recovery",
-  "version_number": "1.1.0",
+  "version_number": "1.2.0",
   "website_url": "https://github.com/JereKuusela/valheim-save_recovery",
   "description": "Recovers some corrupted saves. Uninstall after use.",
-  "dependencies": [
-    "denikson-BepInExPack_Valheim-5.4.2105"
-  ]
+  "dependencies": ["denikson-BepInExPack_Valheim-5.4.2105"]
 }
